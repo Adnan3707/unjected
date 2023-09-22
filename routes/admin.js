@@ -7,8 +7,6 @@ const passport = require('passport');
 const {ensureAuthenticated,ensureAdminAuthenticated} = require('../middleware/auth');
 
 const db = require(process.env.data_base);
-// const us_user = require('../models/us_user');
-// const us_user_permission = require('../models/us_user_permission');
 const User = db.user;
 const Models = db.models ;
 const Op = db.Sequelize.Op;
@@ -35,7 +33,7 @@ router.get('/',async (req, res) => {
   }
 
 });
-router.post('/disable',ensureAuthenticated,ensureAdminAuthenticated, async (req, res) => {
+router.post('/disable', async (req, res) => {
   try{
     let {email} = req.body
     await  db.us_user.update({
@@ -51,7 +49,7 @@ router.post('/disable',ensureAuthenticated,ensureAdminAuthenticated, async (req,
   }
 
 });
-router.post('/enable',ensureAuthenticated,ensureAdminAuthenticated, async (req, res) => {
+router.post('/enable', async (req, res) => {
   try{
     let {cognito_user_id} = req.body
     await  db.us_user.update({
@@ -68,7 +66,7 @@ router.post('/enable',ensureAuthenticated,ensureAdminAuthenticated, async (req, 
 
 });
 
-router.post('/delete',ensureAuthenticated,ensureAdminAuthenticated,async(req,res)=>{
+router.post('/delete',async(req,res)=>{
   try{
 
     let {cognito_user_id} = req.body
@@ -85,7 +83,7 @@ router.post('/delete',ensureAuthenticated,ensureAdminAuthenticated,async(req,res
   }
 })
 
-router.get('/conversations',ensureAuthenticated,ensureAdminAuthenticated,async(req,res)=>{
+router.get('/conversations',async(req,res)=>{
   try{
     let Use  = await db.us_user.findOne( {
       where: {
