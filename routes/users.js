@@ -6,7 +6,7 @@ const passport = require('passport');
 const {forwardAuthenticated,ensureAuthenticated} = require('../middleware/auth');
 
 //Database
-const db = require("../models");
+const db = require(process.env.data_base);
 const User = db.user;
 const Models = db.models ;
 const Op = db.Sequelize.Op;
