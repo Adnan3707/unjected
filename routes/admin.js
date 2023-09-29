@@ -35,14 +35,12 @@ router.get('/',async (req, res) => {
 });
 router.post('/disable', async (req, res) => {
   try{
-    let {email} = req.body
-    await  db.us_user.update({
-      deactivated: true,
-    }, {
-      where: {
-          email: email,
-      },
-    });
+    let {id} = req.body
+    db.us_user_permission.destroy({
+      where:{
+        user_id: id
+      }
+    })
   return res.status(200).json({ msg:'User  Disabled Success'})
   }catch(err){
     return res.status(400).json({ 'server error':err })
@@ -51,14 +49,14 @@ router.post('/disable', async (req, res) => {
 });
 router.post('/enable', async (req, res) => {
   try{
-    let {cognito_user_id} = req.body
-    await  db.us_user.update({
-        deactivated: false,
-      }, {
-        where: {
-            cognito_user_id: cognito_user_id,
-        },
-      });
+    let {id} = req.body
+    await db.us_user_permission.update({
+      name:'user-verified-content'
+    },{
+     where:{
+      user_id:id
+     }
+    })
     return res.status(200).json({ msg:'User  Enabled Success'})
   }catch(err){
     return res.status(400).json({ err:err })
@@ -162,6 +160,15 @@ router.patch('/user/edit/:id',async (req,res)=>{
 
 })
 
+router.get('/verified',async (req, res) => {
+  try{
+    let Ver_Use = await db.sequelize.query(`SELECT us_user.id, us_user.first_name, us_user.last_name,
+    us_user.username, us_user.email, us_user_permission.user_id, us_user_permission.name, us_user.cognito_user_id FROM us_user JOIN us_user_permission ON us_user.id = us_user_permission.user_id `)
+     return res.status(200).json({'Verified Users:-': Ver_Use})
+  }catch(err){
+    return res.status(400).json({'server error': err})
+  }
+});
 
 
 module.exports = router ;
