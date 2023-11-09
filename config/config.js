@@ -4,7 +4,7 @@
 
   },
   test: {
-
+    use_env_variable:process.env.use_env_variable
   },
   production: {
     username: process.env.user_name,

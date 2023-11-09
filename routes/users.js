@@ -85,7 +85,8 @@ router.post('/register', async (req, res) => {
 
 // Login
 router.post('/login', passport.authenticate('local'),(req, res, next) => {
- return res.status(200).json({'logged in for user' : req.user})
+    req.user['unjected'] = req.user.verified ? 'Verified' : 'Not_Verified'
+    return res.status(200).json({'user' :  req.user ,'unjected':req.user.unjected })
 });
 
 // // Login  Google
