@@ -17,6 +17,12 @@ module.exports =  function (passport) {
                 done(null,false)
                }
            // Match password if matched i.e Ok
+           const Sho = await axios({
+            url: `https://${process.env.Shopify_Key}:${process.env.Token}@${process.env.Shopify_Store}.myshopify.com/admin/api/2022-07/customers/search.json?query=email:${user.email}`,
+            method: "get",
+        });
+        let Ver_Dat = Sho.data.customers.filter((obj)=> user.email == obj.email && obj.tags.indexOf("Unjected-OG") !== -1)
+        Ver_Dat.length > 0 ? user['verified'] = true : user['verified'] = false
             done(null, user);
             }catch(err){
                 if (err) throw err;

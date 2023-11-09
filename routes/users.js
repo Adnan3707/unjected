@@ -14,7 +14,8 @@ const Op = db.Sequelize.Op;
 // Login Page
 router.get('/login',ensureAuthenticated, (req, res) => {
 
-     return res.status(200).json({'LOGIN SUCCESS FOR': req.user})
+    req.user['unjected'] = req.user.verified ? 'Verified' : 'Not_Verified'
+    return res.status(200).json({'user' :  req.user ,'unjected':req.user.unjected })
 });
 
 // Register Page
