@@ -1,7 +1,7 @@
 const LocalStrategy = require('passport-local').Strategy;
 
 const bcrypt = require('bcryptjs');
-
+const axios = require('axios');
 //IDs
 //Database
 const db = require("../models");
