@@ -6,7 +6,9 @@
     "migrate": "npx sequelize-cli db:migrate"
   },
   "dependencies": {
+    "@aws/amazon-location-utilities-auth-helper": "^1.0.3",
     "@prisma/client": "^4.16.2",
+    "aws-sdk": "^2.1493.0",
     "axios": "^1.6.1",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
@@ -14,6 +16,7 @@
     "express": "^4.16.4",
     "express-session": "^1.17.3",
     "mongoose": "^5.7.5",
+    "multer": "^1.4.5-lts.1",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
     "pg": "^8.11.2",
