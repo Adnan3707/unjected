@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const {ensureAuthenticated, forwardAuthenticated} = require('../middleware/auth');
 
+const {Con_Use} = require('../utils/Cog_Aws')
+
 const db = require(process.env.data_base);
 
 // Welcome Page
@@ -65,4 +67,10 @@ router.get('/star-sign',ensureAuthenticated,async (req,res)=>{
             return res.status(400).json({ 'server error':err })
         }
 })
+
+router.get('/verify', async (req,res)=>{
+    let {cognito,code} = req.body ;
+    await Con_Use(cognito,code).then((data)=> res.status(200).json({data})).catch(error=>res.status(400).json({'error' :error}))
+  
+  })
 module.exports = router;

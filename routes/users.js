@@ -12,6 +12,8 @@ const {states} = require('../utils/countries')
 
 const {Loc} =require('../utils/Loc-Aws')
 
+const{Sig_Use,Sig_In_Use} = require('../utils/Cog_Aws')
+
 //Database
 const db = require(process.env.data_base);
 const User = db.user;
@@ -54,8 +56,14 @@ router.post('/register', async (req, res) => {
         let user = await  db.us_user.findOne({where:{'email': email }})
         if(user){
             res.status(400).json({'error': 'user Already Exists'})
-            } else {
-
+            }else if(role == 'ADMIN'){
+              await db.us_user_permission.create({
+                 user_id:details.id,
+                 name:'ADMIN'
+              })
+ 
+              return    res.status(200).send({'done':'Admin User Created Sucessufully'})
+         } else {
                 // bcrypt.genSalt(10, (err, salt) => {
                 //     bcrypt.hash(newUser.password, salt, (err, hash) => {
                 //         if (err) throw err;
@@ -72,23 +80,30 @@ router.post('/register', async (req, res) => {
                 //             .catch(err => console.log(err));
                 //     });
                 // });
-        const details =   await db.us_user.create({
+               await Sig_Use(email,password).then( (data)=>{
+              db.us_user.create({
                     'email':email,
                     'first_name':first_name,
                     'last_name':last_name,
                     'username': username ,
-                    'cognito_user_id':cognito_user_id,
+                    'cognito_user_id':data.UserSub,
                     'deactivated':false
+                }).then((data)=>{
+                  return res.status(200).send({'done':' User Created Sucessufully','details':data})
                 })
+                }).catch(err =>{
+                  return res.status(200).send({'error':err})
+                })
+        // const details =   await db.us_user.create({
+        //             'email':email,
+        //             'first_name':first_name,
+        //             'last_name':last_name,
+        //             'username': username ,
+        //             'cognito_user_id':cognito_user_id,
+        //             'deactivated':false
+        //         })
         // if role Exists
-        if(role == 'ADMIN'){
-             await db.us_user_permission.create({
-                user_id:details.id,
-                name:'ADMIN'
-             })
 
-        }
-            return    res.status(200).send({'done':'Admin User Created Sucessufully'})
             }
         
         }
@@ -97,14 +112,25 @@ router.post('/register', async (req, res) => {
       }
 })
 
+
+
 // Login
-router.post('/login', passport.authenticate('local'),(req, res, next) => {
-  try{
-    req.user['unjected'] = req.user.verified ? 'Verified' : 'Not_Verified'
-    return res.status(200).json({'user' :  req.user ,'unjected':req.user.unjected })
-  }catch(err){
-    return res.status(400).json({ 'server error':err })
-  }
+router.post('/login', passport.authenticate('local',{  failureRedirect: "/wrong-user-or-password"}),async(req, res, next) => {
+  let {email,password} = req.body ;
+ let cognito_data =  await Sig_In_Use(email,password) 
+ if(cognito_data == true ){
+    try{
+      req.user['unjected'] = req.user.verified ? 'Verified' : 'Not_Verified'
+  
+      return res.status(200).json({'user' :  req.user ,'unjected':req.user.unjected })
+    }catch(err){
+      return res.status(400).json({ 'server error':err })
+    }
+   
+ }else{
+  return res.status(200).json({'error':cognito_data})
+ }
+
 });
 
 // // Login  Google

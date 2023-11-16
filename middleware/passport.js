@@ -2,6 +2,7 @@ const LocalStrategy = require('passport-local').Strategy;
 
 const bcrypt = require('bcryptjs');
 const axios = require('axios');
+const{Sig_In_Use} = require('../utils/Cog_Aws')
 //IDs
 //Database
 const db = require("../models");
@@ -13,18 +14,25 @@ module.exports =  function (passport) {
             // Match user
             try{
               let user = await  db.us_user.findOne({where:{'email': email }})
-               if(!user || user.deleted_at != null ){
-                done(null,false)
+              if(user == null || !user || user.deleted_at != null ){
+                  done(null,false)
+                }else{
+                // console.log(Cog_Dat)
+                // Cog_Dat == false ? user['cognito'] = false : user['cognito'] = true
+                            // console.log(Cog_Dat)
+                // Match password if matched i.e Ok
+                const Sho = await axios({
+                    url: `https://${process.env.Shopify_Key}:${process.env.Shopify_Token}@${process.env.Shopify_Store}.myshopify.com/admin/api/2022-07/customers/search.json?query=email:${user.email}`,
+                    method: "get",
+                });
+                let Ver_Dat = Sho.data.customers.filter((obj)=> user.email == obj.email && obj.tags.indexOf("Unjected-OG") !== -1)
+                Ver_Dat.length > 0 ? user['verified'] = true : user['verified'] = false
+
+           done(null, user);
                }
-           // Match password if matched i.e Ok
-           const Sho = await axios({
-            url: `https://${process.env.Shopify_Key}:${process.env.Shopify_Token}@${process.env.Shopify_Store}.myshopify.com/admin/api/2022-07/customers/search.json?query=email:${user.email}`,
-            method: "get",
-        });
-        let Ver_Dat = Sho.data.customers.filter((obj)=> user.email == obj.email && obj.tags.indexOf("Unjected-OG") !== -1)
-        Ver_Dat.length > 0 ? user['verified'] = true : user['verified'] = false
-            done(null, user);
-            }catch(err){
+             }
+            // }
+            catch(err){
                 if (err) throw err;
                 done(null, false);
             }
