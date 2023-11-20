@@ -9,3 +9,4 @@ router.get('/all', (req, res) => {
      return res.status(400).json({ 'server error':err })
    }
  });
+ module.exports = router;
