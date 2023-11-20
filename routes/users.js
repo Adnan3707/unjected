@@ -159,9 +159,9 @@ router.get('/connections',async (req,res)=>{
   let {name,age,gender,looking_for,profession,interests,marital_status,starsign,children} = req.body ;
   const Sea = {
       first_name:name,
-      age: Ref.age[age],
+      age: age,
       looking_for:looking_for,
-      gender: Ref.gender[gender],
+      gender: gender,
       profession:profession,
       interests:interests,
       marital_status:marital_status,
