@@ -9,7 +9,7 @@ router.get('/all',async (req, res) => {
      return res.status(400).json({ 'server error':err })
    }
  });
- router.get('/us_conversation',async (req, res) => {
+ router.get('/usconversation',async (req, res) => {
   try{
       let user = await db.us_conversation.findAll({});
    return res.status(200).json({'us_conversation' :  user})
