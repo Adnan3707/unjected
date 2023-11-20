@@ -11,7 +11,7 @@ router.get('/all',async (req, res) => {
  });
  router.get('/usconversation',async (req, res) => {
   try{
-      let user = await db.us_conversation.findAll({});
+      let user = await db.sequelize.query(`SELECT * from us_conversation`);
    return res.status(200).json({'us_conversation' :  user})
  }catch(err){
    return res.status(400).json({ 'server error':err })
