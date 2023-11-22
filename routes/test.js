@@ -140,4 +140,12 @@ router.get('/us_user_permission',async (req, res) => {
    return res.status(400).json({ 'server error':err })
  }
 });
+ router.get('/us_user_image',async (req, res) => {
+  try{
+      let user = await db.sequelize.query(`SELECT * from us_user_image`);
+   return res.status(200).json({'us_user_image' :  user})
+ }catch(err){
+   return res.status(400).json({ 'server error':err })
+ }
+});
  module.exports = router;
