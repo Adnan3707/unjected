@@ -6,7 +6,6 @@
     "migrate": "npx sequelize-cli db:migrate"
   },
   "dependencies": {
-    "@aws/amazon-location-utilities-auth-helper": "^1.0.3",
     "@prisma/client": "^4.16.2",
     "aws-sdk": "^2.1493.0",
     "axios": "^1.6.1",
