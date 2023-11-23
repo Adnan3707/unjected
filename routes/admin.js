@@ -57,7 +57,7 @@ router.post('/enable', async (req, res) => {
     //   user_id:id
     //  }
     // })
-    await db.us_user_permission.update({
+    await db.us_user_permission.create({
       user_id: id,
       name: 'user-verified-content'
     });
