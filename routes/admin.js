@@ -50,13 +50,17 @@ router.post('/disable', async (req, res) => {
 router.post('/enable', async (req, res) => {
   try{
     let {id} = req.body
+    // await db.us_user_permission.update({
+    //   name:'user-verified-content'
+    // },{
+    //  where:{
+    //   user_id:id
+    //  }
+    // })
     await db.us_user_permission.update({
-      name:'user-verified-content'
-    },{
-     where:{
-      user_id:id
-     }
-    })
+      user_id: id,
+      name: 'user-verified-content'
+    });
     return res.status(200).json({ msg:'User  Enabled Success'})
   }catch(err){
     return res.status(400).json({ err:err })
